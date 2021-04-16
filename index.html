@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+   <head>
+      <title>Hello world</title>
+   </head>
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+   <script src = "/socket.io/socket.io.js"></script>
+
+   
+   
+   <body>
+
+      <div id="results">    
+         This text will change     
+      </div>
+      <button id="onSubmit">Login</button>
+      <button id="onGameRequest">Game Request</button>
+      <button id="onBow">Bow Direction</button>
+
+
+
+
+   </body>
+</html>
+
+
+<script>
+      // client code here
+      var socket = io.connect('localhost:4000');
+
+      let username="Guest_"+(new Date()).toDateString();
+      let id=null;
+      let GameId=null;
+
+
+      $("#onSubmit").click(function(event){
+        event.preventDefault();
+        socket.emit("Login",{username:username});
+
+
+      })
+
+      $("#onGameRequest").click(function(event){
+        event.preventDefault();
+        socket.emit("GAME_REQUEST",{id:id});
+
+
+      })
+
+
+
+      $("#onBow").click(function(event){
+        event.preventDefault();
+        socket.emit("BOW_DIRECTION",{GameId:GameId});
+
+
+      })
+
+
+      socket.on("BOW_RESPONSE",function(obj){
+
+
+         console.log("bow direction",{obj});
+      })
+     
+      socket.on(`LOGIN_SUCCESS_${username}`, function(data) {
+         console.log({data})
+
+         id=data.result._id;
+         console.log({id})
+         socket.on("SUCCESS_JOIN_CALLBACK_"+id,function(obj){
+         console.log({obj});
+
+         GameId=obj.gamePlay._id
+         console.log({GameId})
+      });
+
+      socket.on("TOSS_START",function(toss){
+
+
+         console.log({toss});
+      })
+      });
+
+
+
+     
+    </script>

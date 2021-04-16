@@ -1,0 +1,14 @@
+﻿{
+    "connectionString": "mongodb://localhost/micro-finance",
+    "secret": "abhilashiscreatingthisprojectToManuplulate",
+    "mailer":{
+        "service": "GMAIL",
+        "host": "smtp.gmail.com",
+        "port": 587,
+        "secure": true,
+        "auth": {
+        "user": "",
+        "pass": "" 
+        }
+    }
+}
