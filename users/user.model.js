@@ -105,8 +105,26 @@ async function findById(id){
 }
 
 async function getList(body){
-         
-    let sql=`SELECT * FROM ${table} LEFT JOIN emloyees on users.id=emloyees.user_id where users.id > 0`;
+
+
+    let count_sql=`SELECT count(*) as total FROM ${table} JOIN emloyees on users.id=emloyees.user_id where users.id > 0`;
+    
+    let row=await query(count_sql);
+ 
+    let count=row[0].total;
+    
+    console.log(count);
+    
+    let page_count=20;
+
+    let total_page=Math.ceil(count/page_count);
+
+
+    let page=body.hasOwnProperty('page') && body.page!=""?body.page:1;
+
+    let offset=(page-1) * page_count;
+    
+    let sql=`SELECT * FROM ${table} JOIN emloyees on users.id=emloyees.user_id where users.id > 0`;
    
     if(body.hasOwnProperty('first_name') && body.first_name!=''){
 
@@ -124,10 +142,11 @@ async function getList(body){
         sql+=` AND emloyees.organization_name="${body.organization_name}"`;
    }
    
+   sql+=`LIMIT ${page_count} OFFSET ${offset};`
     console.log(sql);
     let model =await query(sql);
     
-    return model;
+    return {model ,total_page};
 
 
 }
